@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+    crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="main.css">
+
+    <title>Ae WritersAppre</title>
+  </head>
+  <body>
+    <div class="container" >
+      <div class="row" >
+        <div class="col-md-4 col-sm-12 text-center div-center" id="total">
+
+          <div id="title-div">
+            <img src="img/joy.png">
+            <img src="img/vote.png">
+            <h3>Ae WritersAppre</h3>
+            <small>Writers Appreciation Platform</small>
+          </div>
+
+          <div id="message">
+            <div id="loader" class="alert alert-secondary">
+              <img src="images/loading.gif">
+              <div><b>LOADING</b></div>
+            </div>
+          </div>
+
+          <div>
+            <form>
+              <div class="form-row">
+                <div class="col">
+                  <input type="text" id="title" class="form-control" placeholder="title">
+                </div>
+                <div class="col">
+                  <input type="text" id="name" class="form-control" placeholder="Your name">
+                </div>
+              </div><br>
+              <div class="form-group">
+                  <textarea type="text" class="form-control" placeholder="Your text" id="info" rows="5"></textarea>
+              </div>
+              <div class="form-group">
+                  <textarea type="text" class="form-control" placeholder="Your caption" id="caption" rows="2"></textarea>
+              </div>
+            </form>
+
+            <button id="submitBtn" class="btn btn-block">Publish</button>
+          </div>
+
+          <div id="articlesBody">
+            
+          </div><br>
+
+          <script id="article" type="x-tmpl-mustache">
+            {{#articleDetails}}
+              <div id="articledetails">
+            <div class="card">
+              <h5 class="card-title">{{Articletitle}}</h5>
+              <small>Uploaded by <STRONG>{{Author}}</STRONG></small><br>
+              <hr>
+              <div>
+                <p>
+                  {{Article}}
+                </p>
+                <caption>
+                  <b>"{{Caption}}"</b>
+                </caption>
+              </div>
+              <hr>
+              <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted"><small style="color: #311B58">Appereciated amount:  </small>{{Amount}} ættos</h6>
+                <input type="number" class="form-control" placeholder="Amount" id={{index}}>
+                <button class="btn publishBtn btn-block" id={{index}}>APPRECIATE</button>
+              </div>
+            </div>
+          </div><br>
+            {{/articleDetails}}
+          </script>
+          <footer>
+      <small class="footer">This Aepp was built by Tobest on the Aeternity blockchain.</small>
+    </footer>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@aeternity/aepp-sdk/dist/aepp-sdk.browser-script.js"></script>
+    <script src="index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    
+  </body>
+</html>
