@@ -121,7 +121,7 @@ $('#submitBtn').click(async function(){
     Article: article,
     Caption: caption,
     index: articleDetails.length+1,
-    Amount: 0
+    Amount: 0,
   })
   renderArticles();
   $("#loader").hide();
