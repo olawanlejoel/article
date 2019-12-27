@@ -77,7 +77,7 @@ window.addEventListener('load', async () => {
     const article = await callStatic('fetchArticle', [i]);
 
     articleDetails.push({
-      publisherAddress: article.name,
+      publisherAddress: article.namee,
       title            : article.title,
       name             : article.name,
       article          : article.article,
