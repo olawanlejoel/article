@@ -99,7 +99,7 @@ jQuery("#articlesBody").on("click", ".publishBtn", async function(event){
 
   await contractCall('appreciateArticle', [index], value);
 
-  const foundIndex = articleDetails.findIndex(article => article.index == dataIndex);
+  const foundIndex = articleDetails.findIndex(article => article.index == event.target.id);
   articleDetails[foundIndex].Amount += parseInt(value, 10);
 
   renderArticles();
