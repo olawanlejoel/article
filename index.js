@@ -93,18 +93,27 @@ window.addEventListener('load', async () => {
 });
 
 jQuery("#articlesBody").on("click", ".publishBtn", async function(event){
-  const value = $(this).siblings('input').val();
-  const dataIndex = event.target.id;
+  $("#loader").show();
+  let value = $(this).siblings('input').val();
+    index = event.target.id;
+
+  await contractCall('appreciateArticle', [index], value);
+
   const foundIndex = articleDetails.findIndex(article => article.index == dataIndex);
   articleDetails[foundIndex].Amount += parseInt(value, 10);
+
+  $("#loader").hide();
   renderArticles();
 });
 
 $('#submitBtn').click(async function(){
-  var title = ($('#title').val()),
+  $("#loader").show();
+  const title = ($('#title').val()),
   	  name = ($('#name').val()),
   	  article = ($('#info').val()),
       caption = ($('#caption').val());
+
+      await contractCall('publishArticle', [title, name, article, caption], 0);
 
   articleDetails.push({
     Articletitle: title,
@@ -115,4 +124,5 @@ $('#submitBtn').click(async function(){
     Amount: 0
   })
   renderArticles();
+  $("#loader").hide();
 });
