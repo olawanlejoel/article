@@ -102,8 +102,8 @@ jQuery("#articlesBody").on("click", ".publishBtn", async function(event){
   const foundIndex = articleDetails.findIndex(article => article.index == dataIndex);
   articleDetails[foundIndex].Amount += parseInt(value, 10);
 
-  $("#loader").hide();
   renderArticles();
+   $("#loader").hide();
 });
 
 $('#submitBtn').click(async function(){
