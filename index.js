@@ -104,6 +104,7 @@ window.addEventListener('load', async () => {
       article          : article.article,
       caption          : article.caption,
       author           : article.publisherAddress,
+      appreciatedAmount:article.appreciatedAmount,
       index: i,
       amounts: article.appreciatedAmount,
     })
