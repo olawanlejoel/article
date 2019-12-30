@@ -37,7 +37,7 @@ const contractSource = `
       let updatedArticles = state.articles{ [index].appreciatedAmount = updatedappreciatedAmount }
       put(state{ articles = updatedArticles })
 `;
-const contractAddress ='ct_eaGxarJH2f1cvMwi9oGR4RuWecW1n227Yrg3kL3BEcfYdCngc';
+const contractAddress ='ct_FFoNXy4yapxpfqgvuXtW33hrvMtmhv9BUX3rHSP3km5jet1dm';
 var client = null;
 var articleDetails = [];
 var totalArticles = 0;
@@ -103,6 +103,7 @@ window.addEventListener('load', async () => {
       name             : article.name,
       article          : article.article,
       caption          : article.caption,
+      author           : article.publisherAddress,
       index: i,
       amounts: article.appreciatedAmount,
     })

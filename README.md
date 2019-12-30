@@ -8,4 +8,8 @@ Articles with the highest appreciation appear on top as it would catch more peop
 
 ## Issues I Rectified
 * Error: You need to deploy contract before calling!  and Uncaught (in promise) TypeError: Cannot read property 'decode' of undefined
-    * I fixed it by redeploying your contract and assigning a new contract address ct_eaGxarJH2f1cvMwi9oGR4RuWecW1n227Yrg3kL3BEcfYdCngc
+    * I fixed it by redeploying your contract and assigning a new contract address ct_FFoNXy4yapxpfqgvuXtW33hrvMtmhv9BUX3rHSP3km5jet1dm
+    * Also reordered your functions
+* Mustace Template not displaying article informations
+    * fixed that also in your index.js
+    
