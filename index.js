@@ -37,10 +37,30 @@ const contractSource = `
       let updatedArticles = state.articles{ [index].appreciatedAmount = updatedappreciatedAmount }
       put(state{ articles = updatedArticles })
 `;
-const publisherAddress ='ct_fPp4ab1betWYQZBkJSWSE38ZykjAovJCcGYuKH6DBHEsai77M';
+const contractAddress ='ct_FFoNXy4yapxpfqgvuXtW33hrvMtmhv9BUX3rHSP3km5jet1dm';
 var client = null;
 var articleDetails = [];
 var totalArticles = 0;
+
+
+
+
+// asychronus read from the blockchain
+async function callStatic(func, args) {
+  const contract = await client.getContractInstance(contractSource, {contractAddress});
+  const calledGet = await contract.call(func, args, {callStatic: true}).catch(e => console.error(e));
+  const decodedGet = await calledGet.decode().catch(e => console.error(e));
+  return decodedGet;
+}
+
+//Create a asynchronous write call for our smart contract
+async function contractCall(func, args, value) {
+  const contract = await client.getContractInstance(contractSource, {contractAddress});
+  console.log("Contract:", contract)
+  const calledSet = await contract.call(func, args, {amount:value}).catch(e => console.error(e));
+  console.log("CalledSet", calledSet)
+  return calledSet;
+}
 
 function renderArticles() {
   articleDetails = articleDetails.sort(function(x,y){return y.Amount-x.Amount})
@@ -50,20 +70,21 @@ function renderArticles() {
   $('#articlesBody').html(rendered);
 }
 
-async function callStatic(func, args) {
-  const contract = await client.getContractInstance(contractSource, {publisherAddress});
-  const calledGet = await contract.call(func, args, {callStatic: true}).catch(e => console.error(e));
-  const decodedGet = await calledGet.decode().catch(e => console.error(e));
 
-  return decodedGet;
-}
+// async function callStatic(func, args) {
+//   const contract = await client.getContractInstance(contractSource, {publisherAddress});
+//   const calledGet = await contract.call(func, args, {callStatic: true}).catch(e => console.error(e));
+//   const decodedGet = await calledGet.decode().catch(e => console.error(e));
 
-async function contractCall(func, args, value) {
-  const contract = await client.getContractInstance(contractSource, {publisherAddress});
-  const calledSet = await contract.call(func, args, {amount: value}).catch(e => console.error(e));
+//   return decodedGet;
+// }
 
-  return calledSet;
-}
+// async function contractCall(func, args, value) {
+//   const contract = await client.getContractInstance(contractSource, {publisherAddress});
+//   const calledSet = await contract.call(func, args, {amount: value}).catch(e => console.error(e));
+
+//   return calledSet;
+// }
 
 window.addEventListener('load', async () => {
   $("#loader").show();
@@ -82,6 +103,8 @@ window.addEventListener('load', async () => {
       name             : article.name,
       article          : article.article,
       caption          : article.caption,
+      author           : article.publisherAddress,
+      appreciatedAmount:article.appreciatedAmount,
       index: i,
       amounts: article.appreciatedAmount,
     })
