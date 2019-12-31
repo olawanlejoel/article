@@ -16,7 +16,7 @@ payable contract ArticleAmount =
 
   entrypoint init() = 
     { articles = {},
-    totalArticles = 0 }
+        totalArticles = 0 }
 
   entrypoint fetchArticle(index : int) : article =
     switch(Map.lookup(index, state.articles))
@@ -40,6 +40,7 @@ payable contract ArticleAmount =
     let updatedappreciatedAmount = article.appreciatedAmount + Call.value
     let updatedArticles = state.articles{ [index].appreciatedAmount = updatedappreciatedAmount }
     put(state{ articles = updatedArticles })
+
 `;
 const contractAddress ='ct_GXYebjuYk1ZV9a3kQ3uEBcB4pyffBaDLDn6bWK5aTB8K4kNCf';
 var client = null;
