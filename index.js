@@ -112,7 +112,7 @@ window.addEventListener('load', async () => {
       appreciatedAmount:article.appreciatedAmount,
       index: i,
       date : new Date(article.articleDate),
-      amounts: article.appreciatedAmount,
+      Amount: article.appreciatedAmount,
     })
   }
 
@@ -125,9 +125,9 @@ jQuery("#articlesBody").on("click", ".appreciateBtn", async function(event){
   $("#loader").show();
   let value = $(this).siblings('input').val();
     index = event.target.id;
-    price = event.target.value
+   
 
-    console.log(price)
+    console.log(value)
 
   // await contractCall('appreciateArticle', [index, price], value);
 
