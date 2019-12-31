@@ -31,13 +31,13 @@ payable contract ArticleAmount =
   entrypoint fetchtotalArticles() : int =
     state.totalArticles
     
-  payable stateful entrypoint appreciateArticle(index : int) =
+  payable stateful entrypoint appreciateArticle(index : int, price : int) =
     
     let article = fetchArticle(index)
 
     require(article.publisherAddress != Call.caller, "You cannot appreciate your own article")
-    Chain.spend(article.publisherAddress, Call.value)
-    let updatedappreciatedAmount = article.appreciatedAmount + Call.value
+    Chain.spend(article.publisherAddress, price)
+    let updatedappreciatedAmount = article.appreciatedAmount + price
     let updatedArticles = state.articles{ [index].appreciatedAmount = updatedappreciatedAmount }
     put(state{ articles = updatedArticles })
 
@@ -125,8 +125,11 @@ jQuery("#articlesBody").on("click", ".appreciateBtn", async function(event){
   $("#loader").show();
   let value = $(this).siblings('input').val();
     index = event.target.id;
+    price = event.target.value
 
-  await contractCall('appreciateArticle', [index], value);
+    console.log(price)
+
+  // await contractCall('appreciateArticle', [index, price], value);
 
   const foundIndex = articleDetails.findIndex(article => article.index == event.target.id);
   articleDetails[foundIndex].Amount += parseInt(value, 10);
