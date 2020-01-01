@@ -133,6 +133,7 @@ jQuery("#articlesBody").on("click", ".appreciateBtn", async function(event){
 
   const foundIndex = articleDetails.findIndex(article => article.index == event.target.id);
   articleDetails[foundIndex].Amount += parseInt(value, 10);
+  location.reload()
 
   renderArticles();
    $("#loader").hide();
