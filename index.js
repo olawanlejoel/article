@@ -1,43 +1,48 @@
 const contractSource = `
-  payable contract ArticleAmount =
+payable contract ArticleAmount =
 
-    record article = 
-      { publisherAddress : address,
-        title            : string,
-        name             : string,
-        article          : string,
-        caption          : string,
-        appreciatedAmount: int }
+  record article = 
+    { publisherAddress : address,
+      title            : string,
+      name             : string,
+      article          : string,
+      caption          : string,
+      appreciatedAmount: int,
+      articleDate : int }
 
-    record state = { 
-      articles : map(int, article),
-       totalArticles : int }
+  record state = { 
+    articles : map(int, article),
+    totalArticles : int }
+
+  entrypoint init() = 
+    { articles = {},
+        totalArticles = 0 }
+
+  entrypoint fetchArticle(index : int) : article =
+    switch(Map.lookup(index, state.articles))
+      None   => abort("No Article was registered with this index number.")
+      Some(x)=> x
     
-    entrypoint init() = 
-      { articles = {},
-       totalArticles = 0 }
+  stateful entrypoint publishArticle(title' : string, name' : string, article' : string, caption' : string) =
+    let article = { publisherAddress = Call.caller, title = title', name = name', article = article', caption = caption', appreciatedAmount = 0, articleDate = Chain.timestamp}
+    let index = fetchtotalArticles() + 1 
+    put(state { articles[index] = article, totalArticles = index})
     
-    entrypoint fetchArticle(index : int) : article =
-      switch(Map.lookup(index, state.articles))
-        None   => abort("No Article was registered with this index number.")
-        Some(x)=> x
-      
-    stateful entrypoint publishArticle(title' : string, name' : string, article' : string, caption' : string) =
-      let article = { publisherAddress = Call.caller, title = title', name = name', article = article', caption = caption', appreciatedAmount = 0}
-      let index = fetchtotalArticles() + 1
-      put(state { articles[index] = article, totalArticles = index})
-      
-    entrypoint fetchtotalArticles() : int =
-      state.totalArticles
-      
-    payable stateful entrypoint appreciateArticle(index : int) =
-      let article = fetchArticle(index)
-      Chain.spend(article.publisherAddress, Call.value)
-      let updatedappreciatedAmount = article.appreciatedAmount + Call.value
-      let updatedArticles = state.articles{ [index].appreciatedAmount = updatedappreciatedAmount }
-      put(state{ articles = updatedArticles })
+  entrypoint fetchtotalArticles() : int =
+    state.totalArticles
+    
+  payable stateful entrypoint appreciateArticle(index : int, price : int) =
+    
+    let article = fetchArticle(index)
+
+    require(article.publisherAddress != Call.caller, "You cannot appreciate your own article")
+    Chain.spend(article.publisherAddress, price)
+    let updatedappreciatedAmount = article.appreciatedAmount + price
+    let updatedArticles = state.articles{ [index].appreciatedAmount = updatedappreciatedAmount }
+    put(state{ articles = updatedArticles })
+
 `;
-const contractAddress ='ct_FFoNXy4yapxpfqgvuXtW33hrvMtmhv9BUX3rHSP3km5jet1dm';
+const contractAddress ='ct_GXYebjuYk1ZV9a3kQ3uEBcB4pyffBaDLDn6bWK5aTB8K4kNCf';
 var client = null;
 var articleDetails = [];
 var totalArticles = 0;
@@ -106,7 +111,8 @@ window.addEventListener('load', async () => {
       author           : article.publisherAddress,
       appreciatedAmount:article.appreciatedAmount,
       index: i,
-      amounts: article.appreciatedAmount,
+      date : new Date(article.articleDate),
+      Amount: article.appreciatedAmount,
     })
   }
 
@@ -115,21 +121,25 @@ window.addEventListener('load', async () => {
   $("#loader").hide();
 });
 
-jQuery("#articlesBody").on("click", ".publishBtn", async function(event){
+jQuery("#articlesBody").on("click", ".appreciateBtn", async function(event){
   $("#loader").show();
   let value = $(this).siblings('input').val();
     index = event.target.id;
+   
 
-  await contractCall('appreciateArticle', [index], value);
+    console.log(value)
+
+  await contractCall('appreciateArticle', [index, value], value);
 
   const foundIndex = articleDetails.findIndex(article => article.index == event.target.id);
   articleDetails[foundIndex].Amount += parseInt(value, 10);
+  location.reload()
 
   renderArticles();
    $("#loader").hide();
 });
 
-$('#submitBtn').click(async function(){
+$('#publishBtn').click(async function(){
   $("#loader").show();
   const title = ($('#title').val()),
   	  name = ($('#name').val()),
@@ -137,6 +147,8 @@ $('#submitBtn').click(async function(){
       caption = ($('#caption').val());
 
       await contractCall('publishArticle', [title, name, article, caption], 0);
+      const id = articleDetails.length +1
+      newDate = await callStatic('fetchArticle', [id])
 
   articleDetails.push({
     Articletitle: title,
@@ -144,6 +156,7 @@ $('#submitBtn').click(async function(){
     Article: article,
     Caption: caption,
     index: articleDetails.length+1,
+    date : new Date(newDate.articleDate),
     Amount: 0,
   })
   renderArticles();

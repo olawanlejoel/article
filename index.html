@@ -50,7 +50,7 @@
               </div>
             </form>
 
-            <button id="submitBtn" class="btn btn-block">Publish</button>
+            <button id="publishBtn" class="btn btn-block">Publish</button>
           </div>
 
           <div id="articlesBody">
@@ -74,9 +74,11 @@
               </div>
               <hr>
               <div class="card-body">
+                <br>
+                <h6 class="card-subtitle mb-2 text-muted"><small style="color: #311B58">Appereciated amount:  </small>{{date}} ættos</h6>
                 <h6 class="card-subtitle mb-2 text-muted"><small style="color: #311B58">Appereciated amount:  </small>{{Amount}} ættos</h6>
                 <input type="number" class="form-control" placeholder="Amount" id={{index}}>
-                <button class="btn publishBtn btn-block" id={{index}}>APPRECIATE</button>
+                <button class="btn appreciateBtn btn-block" id={{index}}>APPRECIATE</button>
               </div>
             </div>
           </div><br>
@@ -92,7 +94,7 @@
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://unpkg.com/@aeternity/aepp-sdk/dist/aepp-sdk.browser-script.js"></script>
     <script src="index.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.js">
