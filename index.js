@@ -25,7 +25,7 @@ payable contract ArticleAmount =
     
   stateful entrypoint publishArticle(title' : string, name' : string, article' : string, caption' : string) =
     let article = { publisherAddress = Call.caller, title = title', name = name', article = article', caption = caption', appreciatedAmount = 0, articleDate = Chain.timestamp}
-    let index = fetchtotalArticles() + 1
+    let index = fetchtotalArticles() + 1 
     put(state { articles[index] = article, totalArticles = index})
     
   entrypoint fetchtotalArticles() : int =
@@ -131,8 +131,8 @@ jQuery("#articlesBody").on("click", ".appreciateBtn", async function(event){
 
   await contractCall('appreciateArticle', [index, value], value);
 
-  // const foundIndex = articleDetails.findIndex(article => article.index == event.target.id);
-  // articleDetails[foundIndex].Amount += parseInt(value, 10);
+  const foundIndex = articleDetails.findIndex(article => article.index == event.target.id);
+  articleDetails[foundIndex].Amount += parseInt(value, 10);
 
   renderArticles();
    $("#loader").hide();
