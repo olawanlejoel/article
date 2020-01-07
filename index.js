@@ -37,7 +37,7 @@ const contractSource = `
       let updatedArticles = state.articles{ [index].appreciatedAmount = updatedappreciatedAmount }
       put(state{ articles = updatedArticles })
 `;
-const publisherAddress ='ct_FFoNXy4yapxpfqgvuXtW33hrvMtmhv9BUX3rHSP3km5jet1dm';
+const contractAddress ='ct_FFoNXy4yapxpfqgvuXtW33hrvMtmhv9BUX3rHSP3km5jet1dm';
 var client = null;
 var contractInstance = null;
 var articleDetails = [];
@@ -80,7 +80,7 @@ window.addEventListener('load', async () => {
     const article = (await contractInstance.methods.fetchArticle(i)).decodedResult;
 
     articleDetails.push({
-      publisherAddress: article.name,
+      authorName       : article.name,
       title            : article.title,
       name             : article.name,
       article          : article.article,
@@ -121,7 +121,7 @@ $('#submitBtn').click(async function(){
 
   articleDetails.push({
     Articletitle: title,
-    Author: name,
+    authorName: name,
     Article: article,
     Caption: caption,
     index: articleDetails.length+1,
