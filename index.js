@@ -80,7 +80,7 @@ window.addEventListener('load', async () => {
     const article = (await contractInstance.methods.fetchArticle(i)).decodedResult;
 
     articleDetails.push({
-      publisherName: article.name,
+      publisherAddress: article.name,
       title            : article.title,
       name             : article.name,
       article          : article.article,
@@ -120,7 +120,6 @@ $('#submitBtn').click(async function(){
       await contractInstance.methods.publishArticle(title, name, article, caption);
 
   articleDetails.push({
-    publisherName: name,
     Articletitle: title,
     Author: name,
     Article: article,
