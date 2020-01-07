@@ -37,7 +37,7 @@ const contractSource = `
       let updatedArticles = state.articles{ [index].appreciatedAmount = updatedappreciatedAmount }
       put(state{ articles = updatedArticles })
 `;
-const publisherAddress ='ct_3qcQPstR3x4ysjjZhfUA95JXqJ33tRAH6dBiTspiW1fWuahkS';
+const publisherAddress ='ct_FFoNXy4yapxpfqgvuXtW33hrvMtmhv9BUX3rHSP3km5jet1dm';
 var client = null;
 var contractInstance = null;
 var articleDetails = [];
