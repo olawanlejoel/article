@@ -7,37 +7,33 @@ payable contract ArticleAmount =
       name             : string,
       article          : string,
       caption          : string,
-      appreciatedAmount: int,
-      articleDate : int }
+      appreciatedAmount: int }
 
   record state = { 
     articles : map(int, article),
-    totalArticles : int }
-
+     totalArticles : int }
+  
   entrypoint init() = 
     { articles = {},
-        totalArticles = 0 }
-
+     totalArticles = 0 }
+  
   entrypoint fetchArticle(index : int) : article =
     switch(Map.lookup(index, state.articles))
       None   => abort("No Article was registered with this index number.")
       Some(x)=> x
     
   stateful entrypoint publishArticle(title' : string, name' : string, article' : string, caption' : string) =
-    let article = { publisherAddress = Call.caller, title = title', name = name', article = article', caption = caption', appreciatedAmount = 0, articleDate = Chain.timestamp}
-    let index = fetchtotalArticles() + 1 
+    let article = { publisherAddress = Call.caller, title = title', name = name', article = article', caption = caption', appreciatedAmount = 0}
+    let index = fetchtotalArticles() + 1
     put(state { articles[index] = article, totalArticles = index})
     
   entrypoint fetchtotalArticles() : int =
     state.totalArticles
     
-  payable stateful entrypoint appreciateArticle(index : int, price : int) =
-    
+  payable stateful entrypoint appreciateArticle(index : int) =
     let article = fetchArticle(index)
-
-    require(article.publisherAddress != Call.caller, "You cannot appreciate your own article")
-    Chain.spend(article.publisherAddress, price)
-    let updatedappreciatedAmount = article.appreciatedAmount + price
+    Chain.spend(article.publisherAddress, Call.value)
+    let updatedappreciatedAmount = article.appreciatedAmount + Call.value
     let updatedArticles = state.articles{ [index].appreciatedAmount = updatedappreciatedAmount }
     put(state{ articles = updatedArticles })
 
