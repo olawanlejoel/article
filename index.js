@@ -76,20 +76,20 @@ function renderArticles() {
 }
 
 
-// async function callStatic(func, args) {
-//   const contract = await client.getContractInstance(contractSource, {publisherAddress});
-//   const calledGet = await contract.call(func, args, {callStatic: true}).catch(e => console.error(e));
-//   const decodedGet = await calledGet.decode().catch(e => console.error(e));
+async function callStatic(func, args) {
+  const contract = await client.getContractInstance(contractSource, {publisherAddress});
+  const calledGet = await contract.call(func, args, {callStatic: true}).catch(e => console.error(e));
+  const decodedGet = await calledGet.decode().catch(e => console.error(e));
 
-//   return decodedGet;
-// }
+  return decodedGet;
+}
 
-// async function contractCall(func, args, value) {
-//   const contract = await client.getContractInstance(contractSource, {publisherAddress});
-//   const calledSet = await contract.call(func, args, {amount: value}).catch(e => console.error(e));
+async function contractCall(func, args, value) {
+  const contract = await client.getContractInstance(contractSource, {publisherAddress});
+  const calledSet = await contract.call(func, args, {amount: value}).catch(e => console.error(e));
 
-//   return calledSet;
-// }
+  return calledSet;
+}
 
 window.addEventListener('load', async () => {
   $("#loader").show();
