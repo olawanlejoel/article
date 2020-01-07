@@ -7,23 +7,24 @@ payable contract ArticleAmount =
       name             : string,
       article          : string,
       caption          : string,
-      appreciatedAmount: int }
+      appreciatedAmount: int,
+      articleDate : int }
 
   record state = { 
     articles : map(int, article),
-     totalArticles : int }
-  
+    totalArticles : int }
+
   entrypoint init() = 
     { articles = {},
-     totalArticles = 0 }
-  
+    totalArticles = 0 }
+
   entrypoint fetchArticle(index : int) : article =
     switch(Map.lookup(index, state.articles))
       None   => abort("No Article was registered with this index number.")
       Some(x)=> x
     
   stateful entrypoint publishArticle(title' : string, name' : string, article' : string, caption' : string) =
-    let article = { publisherAddress = Call.caller, title = title', name = name', article = article', caption = caption', appreciatedAmount = 0}
+    let article = { publisherAddress = Call.caller, title = title', name = name', article = article', caption = caption', appreciatedAmount = 0, articleDate = Chain.timestamp}
     let index = fetchtotalArticles() + 1
     put(state { articles[index] = article, totalArticles = index})
     
@@ -31,7 +32,10 @@ payable contract ArticleAmount =
     state.totalArticles
     
   payable stateful entrypoint appreciateArticle(index : int) =
+    
     let article = fetchArticle(index)
+
+    require(article.publisherAddress != Call.caller, "You cannot appreciate your own article")
     Chain.spend(article.publisherAddress, Call.value)
     let updatedappreciatedAmount = article.appreciatedAmount + Call.value
     let updatedArticles = state.articles{ [index].appreciatedAmount = updatedappreciatedAmount }
@@ -72,20 +76,20 @@ function renderArticles() {
 }
 
 
-// async function callStatic(func, args) {
-//   const contract = await client.getContractInstance(contractSource, {publisherAddress});
-//   const calledGet = await contract.call(func, args, {callStatic: true}).catch(e => console.error(e));
-//   const decodedGet = await calledGet.decode().catch(e => console.error(e));
+async function callStatic(func, args) {
+  const contract = await client.getContractInstance(contractSource, {publisherAddress});
+  const calledGet = await contract.call(func, args, {callStatic: true}).catch(e => console.error(e));
+  const decodedGet = await calledGet.decode().catch(e => console.error(e));
 
-//   return decodedGet;
-// }
+  return decodedGet;
+}
 
-// async function contractCall(func, args, value) {
-//   const contract = await client.getContractInstance(contractSource, {publisherAddress});
-//   const calledSet = await contract.call(func, args, {amount: value}).catch(e => console.error(e));
+async function contractCall(func, args, value) {
+  const contract = await client.getContractInstance(contractSource, {publisherAddress});
+  const calledSet = await contract.call(func, args, {amount: value}).catch(e => console.error(e));
 
-//   return calledSet;
-// }
+  return calledSet;
+}
 
 window.addEventListener('load', async () => {
   $("#loader").show();
