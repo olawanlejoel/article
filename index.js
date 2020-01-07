@@ -44,10 +44,10 @@ var articleDetails = [];
 var totalArticles = 0;
 
 function renderArticles() {
-  articleDetails = articleDetails.sort(function(x,y){return y.Amount-x.Amount})
-  var article = $('#article').html();
-  Mustache.parse(article);
-  var rendered = Mustache.render(article, {articleDetails});
+  articleDetails = articleDetails.sort((x, y) => y.Amount - x.Amount);
+  let template = $('#template').html();
+  Mustache.parse(template);
+  let rendered = Mustache.render(template, {articleDetails});
   $('#articlesBody').html(rendered);
 }
 
@@ -80,7 +80,7 @@ window.addEventListener('load', async () => {
     const article = (await contractInstance.methods.fetchArticle(i)).decodedResult;
 
     articleDetails.push({
-      publisherAddress: article.name,
+      publisherName: article.name,
       title            : article.title,
       name             : article.name,
       article          : article.article,
@@ -120,6 +120,7 @@ $('#submitBtn').click(async function(){
       await contractInstance.methods.publishArticle(title, name, article, caption);
 
   articleDetails.push({
+    publisherName: name,
     Articletitle: title,
     Author: name,
     Article: article,
