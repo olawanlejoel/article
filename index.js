@@ -39,37 +39,17 @@ const contractSource = `
 `;
 const contractAddress ='ct_FFoNXy4yapxpfqgvuXtW33hrvMtmhv9BUX3rHSP3km5jet1dm';
 var client = null;
+var contractInstance = null;
 var articleDetails = [];
 var totalArticles = 0;
 
-
-
-
-// asychronus read from the blockchain
-async function callStatic(func, args) {
-  const contract = await client.getContractInstance(contractSource, {contractAddress});
-  const calledGet = await contract.call(func, args, {callStatic: true}).catch(e => console.error(e));
-  const decodedGet = await calledGet.decode().catch(e => console.error(e));
-  return decodedGet;
-}
-
-//Create a asynchronous write call for our smart contract
-async function contractCall(func, args, value) {
-  const contract = await client.getContractInstance(contractSource, {contractAddress});
-  console.log("Contract:", contract)
-  const calledSet = await contract.call(func, args, {amount:value}).catch(e => console.error(e));
-  console.log("CalledSet", calledSet)
-  return calledSet;
-}
-
 function renderArticles() {
-  articleDetails = articleDetails.sort(function(x,y){return y.Amount-x.Amount})
-  var article = $('#article').html();
-  Mustache.parse(article);
-  var rendered = Mustache.render(article, {articleDetails});
+  articleDetails = articleDetails.sort((x, y) => y.Amount - x.Amount);
+  let template = $('#template').html();
+  Mustache.parse(template);
+  let rendered = Mustache.render(template, {articleDetails});
   $('#articlesBody').html(rendered);
 }
-
 
 // async function callStatic(func, args) {
 //   const contract = await client.getContractInstance(contractSource, {publisherAddress});
@@ -91,21 +71,21 @@ window.addEventListener('load', async () => {
 
   client = await Ae.Aepp();
 
-  totalArticles = await callStatic('fetchtotalArticles', []);
+  contractInstance = await client.getContractInstance(contractSource, {contractAddress});
+
+  totalArticles = (await contractInstance.methods.fetchtotalArticles()).decodedResult;
 
   for (let i = 1; i <= totalArticles; i++) {
 
-    const article = await callStatic('fetchArticle', [i]);
+    const article = (await contractInstance.methods.fetchArticle(i)).decodedResult;
 
     articleDetails.push({
-      publisherAddress: article.namee,
+      authorName       : article.name,
       title            : article.title,
       name             : article.name,
       article          : article.article,
       caption          : article.caption,
-      author           : article.publisherAddress,
-      appreciatedAmount:article.appreciatedAmount,
-      index: i,
+      index            : i,
       amounts: article.appreciatedAmount,
     })
   }
@@ -118,15 +98,16 @@ window.addEventListener('load', async () => {
 jQuery("#articlesBody").on("click", ".publishBtn", async function(event){
   $("#loader").show();
   let value = $(this).siblings('input').val();
-    index = event.target.id;
+      index = event.target.id;
 
-  await contractCall('appreciateArticle', [index], value);
+  await contractInstance.methods.appreciateArticle(index, { amount: value }).catch(console.error);
 
   const foundIndex = articleDetails.findIndex(article => article.index == event.target.id);
   articleDetails[foundIndex].Amount += parseInt(value, 10);
 
+  
   renderArticles();
-   $("#loader").hide();
+  $("#loader").hide();
 });
 
 $('#submitBtn').click(async function(){
@@ -136,16 +117,16 @@ $('#submitBtn').click(async function(){
   	  article = ($('#info').val()),
       caption = ($('#caption').val());
 
-      await contractCall('publishArticle', [title, name, article, caption], 0);
+      await contractInstance.methods.publishArticle(title, name, article, caption);
 
   articleDetails.push({
     Articletitle: title,
-    Author: name,
+    authorName: name,
     Article: article,
     Caption: caption,
     index: articleDetails.length+1,
     Amount: 0,
-  })
+  });
   renderArticles();
   $("#loader").hide();
 });
