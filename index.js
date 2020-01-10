@@ -80,12 +80,12 @@ window.addEventListener('load', async () => {
     const article = (await contractInstance.methods.fetchArticle(i)).decodedResult;
 
     articleDetails.push({
-      Articletitle     : article.title,
-      Author           : article.name,
-      Article          : article.article,
-      Caption          : article.caption,
+      articleTitle     : article.title,
+      author           : article.name,
+      article          : article.article,
+      caption          : article.caption,
       index            : i,
-      Amount: article.appreciatedAmount,
+      amount: article.appreciatedAmount,
     })
   }
 
@@ -119,12 +119,12 @@ $('#submitBtn').click(async function(){
   await contractInstance.methods.publishArticle(title, name, article, caption);
 
   articleDetails.push({
-    Articletitle: title,
-    Author: name,
-    Article: article,
-    Caption: caption,
+    articleTitle: title,
+    author: name,
+    article: article,
+    caption: caption,
     index: articleDetails.length+1,
-    Amount: 0,
+    amount: 0,
   });
   renderArticles();
   $("#loader").hide();
