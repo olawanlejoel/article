@@ -96,7 +96,7 @@ window.addEventListener('load', async () => {
 
 jQuery("#articlesBody").on("click", ".publishBtn", async function(event){
   $("#loader").show();
-  let value = $(this).siblings('input').val();
+  let value = $(this).siblings('input').val(),
       index = event.target.id;
 
   await contractInstance.methods.appreciateArticle(index, { amount: value }).catch(console.error);
