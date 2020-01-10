@@ -80,13 +80,12 @@ window.addEventListener('load', async () => {
     const article = (await contractInstance.methods.fetchArticle(i)).decodedResult;
 
     articleDetails.push({
-      authorName       : article.name,
-      title            : article.title,
-      name             : article.name,
-      article          : article.article,
-      caption          : article.caption,
+      Articletitle     : article.title,
+      Author           : article.name,
+      Article          : article.article,
+      Caption          : article.caption,
       index            : i,
-      amounts: article.appreciatedAmount,
+      Amount: article.appreciatedAmount,
     })
   }
 
@@ -113,15 +112,15 @@ jQuery("#articlesBody").on("click", ".publishBtn", async function(event){
 $('#submitBtn').click(async function(){
   $("#loader").show();
   const title = ($('#title').val()),
-  	  name = ($('#name').val()),
-  	  article = ($('#info').val()),
-      caption = ($('#caption').val());
+    	  name = ($('#name').val()),
+    	  article = ($('#info').val()),
+        caption = ($('#caption').val());
 
-      await contractInstance.methods.publishArticle(title, name, article, caption);
+  await contractInstance.methods.publishArticle(title, name, article, caption);
 
   articleDetails.push({
     Articletitle: title,
-    authorName: name,
+    Author: name,
     Article: article,
     Caption: caption,
     index: articleDetails.length+1,
