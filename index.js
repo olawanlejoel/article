@@ -94,7 +94,7 @@ window.addEventListener('load', async () => {
   for (let i = 1; i <= totalArticles; i++) {
 
     // const article = (await contractInstance.methods.fetchArticle(i)).decodedResult;
-    const article = await callStatic('fetchArticle', [])
+    const article = await callStatic('fetchArticle', [i])
     console.log(article)
 
     articleDetails.push({
