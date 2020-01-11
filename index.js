@@ -112,13 +112,12 @@ window.addEventListener('load', async () => {
   $("#loader").hide();
 });
 
-jQuery("#articlesBody").on("click", ".appreciateBtn", async function(event){
+jQuery("#articlesBody").on("click", ".publishBtn", async function(event){
   $("#loader").show();
   let value = $(this).siblings('input').val(),
       index = event.target.id;
 
-  await contractInstance.methods.appreciateArticle(index, { amount: value }).catch(console.error);
-  await contractCall('appreciateArticle', [index], value )
+  await contractInstance.methods.appreciateArticle(index, { amount1: value }).catch(console.error);
 
   const foundIndex = articleDetails.findIndex(article => article.index == event.target.id);
   articleDetails[foundIndex].Amount += parseInt(value, 10);
@@ -127,6 +126,7 @@ jQuery("#articlesBody").on("click", ".appreciateBtn", async function(event){
   renderArticles();
   $("#loader").hide();
 });
+
 
 $('#publishBtn').click(async function(){
   console.log("clicked submit")
