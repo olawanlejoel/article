@@ -1,6 +1,5 @@
 const contractSource = `
   payable contract ArticleAmount =
-
     record article = 
       { publisherAddress : address,
         title            : string,
@@ -8,7 +7,6 @@ const contractSource = `
         article          : string,
         caption          : string,
         appreciatedAmount: int }
-
     record state = { 
       articles : map(int, article),
        totalArticles : int }
@@ -51,33 +49,53 @@ function renderArticles() {
   $('#articlesBody').html(rendered);
 }
 
-// async function callStatic(func, args) {
-//   const contract = await client.getContractInstance(contractSource, {publisherAddress});
-//   const calledGet = await contract.call(func, args, {callStatic: true}).catch(e => console.error(e));
-//   const decodedGet = await calledGet.decode().catch(e => console.error(e));
+async function callStatic(func, args) {
+  //Create a new contract instance that we can interact with
+  const contract = await client.getContractInstance(contractSource, {
+    contractAddress
+  });
 
-//   return decodedGet;
-// }
+  const calledGet = await contract
+    .call(func, args, {
+      callStatic: true
+    })
+    .catch(e => console.error(e));
 
-// async function contractCall(func, args, value) {
-//   const contract = await client.getContractInstance(contractSource, {publisherAddress});
-//   const calledSet = await contract.call(func, args, {amount: value}).catch(e => console.error(e));
+  const decodedGet = await calledGet.decode().catch(e => console.error(e));
+  console.log("number of posts : ", decodedGet);
+  return decodedGet;
+}
 
-//   return calledSet;
-// }
+async function contractCall(func, args, value) {
+  const contract = await client.getContractInstance(contractSource, {
+    contractAddress
+  });
+  //Make a call to write smart contract func, with aeon value input
+  const calledSet = await contract
+    .call(func, args, {
+      amount: value
+    })
+    .catch(e => console.error(e));
+
+  return calledSet;
+}
 
 window.addEventListener('load', async () => {
   $("#loader").show();
 
   client = await Ae.Aepp();
 
-  contractInstance = await client.getContractInstance(contractSource, {contractAddress});
+  // contractInstance = await client.getContractInstance(contractSource, {contractAddress});
 
-  totalArticles = (await contractInstance.methods.fetchtotalArticles()).decodedResult;
+  // totalArticles = (await contractInstance.methods.fetchtotalArticles()).decodedResult;
+  totalArticles =  await callStatic('fetchtotalArticles', [])
+  console.log(totalArticles)
 
   for (let i = 1; i <= totalArticles; i++) {
 
-    const article = (await contractInstance.methods.fetchArticle(i)).decodedResult;
+    // const article = (await contractInstance.methods.fetchArticle(i)).decodedResult;
+    const article = await callStatic('fetchArticle', [])
+    console.log(article)
 
     articleDetails.push({
       articleTitle     : article.title,
@@ -94,12 +112,13 @@ window.addEventListener('load', async () => {
   $("#loader").hide();
 });
 
-jQuery("#articlesBody").on("click", ".publishBtn", async function(event){
+jQuery("#articlesBody").on("click", ".appreciateBtn", async function(event){
   $("#loader").show();
   let value = $(this).siblings('input').val(),
       index = event.target.id;
 
   await contractInstance.methods.appreciateArticle(index, { amount: value }).catch(console.error);
+  await contractCall('appreciateArticle', [index], value )
 
   const foundIndex = articleDetails.findIndex(article => article.index == event.target.id);
   articleDetails[foundIndex].Amount += parseInt(value, 10);
@@ -109,14 +128,16 @@ jQuery("#articlesBody").on("click", ".publishBtn", async function(event){
   $("#loader").hide();
 });
 
-$('#submitBtn').click(async function(){
+$('#publishBtn').click(async function(){
+  console.log("clicked submit")
   $("#loader").show();
   const title = ($('#title').val()),
     	  name = ($('#name').val()),
     	  article = ($('#info').val()),
         caption = ($('#caption').val());
 
-  await contractInstance.methods.publishArticle(title, name, article, caption);
+  // await contractInstance.methods.publishArticle(title, name, article, caption);
+  await contractCall('publishArticle', [title, name, article, caption], 0)
 
   articleDetails.push({
     articleTitle: title,
