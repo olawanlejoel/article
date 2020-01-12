@@ -70,9 +70,9 @@ async function callStatic(func, args) {
 //Create a asynchronous write call for our smart contract
 async function contractCall(func, args, value) {
   const contract = await client.getContractInstance(contractSource, {contractAddress});
-  console.log("Contract:", contract)
+  
   const calledSet = await contract.call(func, args, {amount:value}).catch(e => console.error(e));
-  console.log("CalledSet", calledSet)
+  
   return calledSet;
 }
 
