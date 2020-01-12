@@ -46,7 +46,18 @@ var articleDetails = [];
 var totalArticles = 0;
 
 
+function renderArticles() {
+  //orders the articles from highest to lowest votes
+  articleDetails = articleDetails.sort(function(x,y){return y.Amount - x.Amount});
 
+  var article = $('#article').html();
+   //Use mustache parse function to speeds up on future uses
+  Mustache.parse(article);
+  //Create variable with result of render func form article and data
+  var rendered = Mustache.render(article, {articleDetails});
+  //Use jquery to add the result of the rendering to our html
+  $('#articlesBody').html(rendered);
+}
 
 // asychronus read from the blockchain
 async function callStatic(func, args) {
@@ -63,19 +74,6 @@ async function contractCall(func, args, value) {
   const calledSet = await contract.call(func, args, {amount:value}).catch(e => console.error(e));
   console.log("CalledSet", calledSet)
   return calledSet;
-}
-
-function renderArticles() {
-  //orders the articles from highest to lowest votes
-  articleDetails = articleDetails.sort(function(x,y){return y.Amount - x.Amount});
-
-  var article = $('#article').html();
-   //Use mustache parse function to speeds up on future uses
-  Mustache.parse(article);
-  //Create variable with result of render func form article and data
-  var rendered = Mustache.render(article, {articleDetails});
-  //Use jquery to add the result of the rendering to our html
-  $('#articlesBody').html(rendered);
 }
 
 //execution of main function
