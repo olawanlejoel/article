@@ -7,8 +7,7 @@ const contractSource = `
         name             : string,
         article          : string,
         caption          : string,
-        appreciatedAmount: int
-        articleDate : int}
+        appreciatedAmount: int }
     record state = { 
       articles : map(int, article),
        totalArticles : int }
@@ -23,7 +22,7 @@ const contractSource = `
         Some(x)=> x
       
     stateful entrypoint publishArticle(title' : string, name' : string, article' : string, caption' : string) =
-      let article = { publisherAddress = Call.caller, title = title', name = name', article = article', caption = caption', appreciatedAmount = 0, articleDate = Chain.timestamp}
+      let article = { publisherAddress = Call.caller, title = title', name = name', article = article', caption = caption', appreciatedAmount = 0}
       let index = fetchtotalArticles() + 1
       put(state { articles[index] = article, totalArticles = index})
       
@@ -104,7 +103,6 @@ window.addEventListener('load', async () => {
       author           : article.publisherAddress,
       appreciatedAmount:article.appreciatedAmount,
       index: i,
-      date : new Date(article.articleDate),
       amounts: article.appreciatedAmount,
     })
   }
@@ -140,8 +138,6 @@ $('#submitBtn').click(async function(){
       caption = ($('#caption').val());
 
   await contractCall('publishArticle', [title, name, article, caption], 0);
-  const id = articleDetails.length +1
-  newDate = await callStatic('fetchArticle', [id])
 
   //Add the new created article to our articleDetails
   articleDetails.push({
@@ -150,7 +146,6 @@ $('#submitBtn').click(async function(){
     Article: article,
     Caption: caption,
     index: articleDetails.length+1,
-    date : new Date(newDate.articleDate),
     Amount: 0,
   })
   renderArticles();
