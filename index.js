@@ -1,40 +1,44 @@
 const contractSource = `
 payable contract ArticleAmount =
-  record article = 
-    { publisherAddress : address,
-      title            : string,
-      article          : string,
-      caption          : string,
-      appreciatedAmount: int,
-      articleDate : int }
-  record state = { 
-    articles : map(int, article),
-    totalArticles : int }
-  entrypoint init() = 
-    { articles = {},
-        totalArticles = 0 }
-  entrypoint fetchArticle(index : int) : article =
-    switch(Map.lookup(index, state.articles))
-      None   => abort("No Article was registered with this index number.")
-      Some(x)=> x
+    record article = 
+      { publisherAddress : address,
+        title            : string,
+        name             : string,
+        article          : string,
+        caption          : string,
+        appreciatedAmount: int }
+    record state = { 
+      articles : map(int, article),
+       totalArticles : int }
     
-  stateful entrypoint publishArticle(title' : string, article' : string, caption' : string) =
-    let article = { publisherAddress = Call.caller, title = title', article = article', caption = caption', appreciatedAmount = 0, articleDate = Chain.timestamp}
-    let index = fetchtotalArticles() + 1
-    put(state { articles[index] = article, totalArticles = index})
+    entrypoint init() = 
+      { articles = {},
+       totalArticles = 0 }
     
-  entrypoint fetchtotalArticles() : int =
-    state.totalArticles
+    entrypoint fetchArticle(index : int) : article =
+      switch(Map.lookup(index, state.articles))
+        None   => abort("No Article was registered with this index number.")
+        Some(x)=> x
+      
+    stateful entrypoint publishArticle(title' : string, name' : string, article' : string, caption' : string) =
+      let article = { publisherAddress = Call.caller, title = title', name = name', article = article', caption = caption', appreciatedAmount = 0}
+      let index = fetchtotalArticles() + 1
+      put(state { articles[index] = article, totalArticles = index})
+      
+    entrypoint fetchtotalArticles() : int =
+      state.totalArticles
+      
+    payable stateful entrypoint appreciateArticle(index : int, price : int) =
     
-  payable stateful entrypoint appreciateArticle(index : int) =
-      let article = fetchArticle(index)
-      Chain.spend(article.publisherAddress, Call.value)
-      let updatedappreciatedAmount = article.appreciatedAmount + Call.value
-      let updatedArticles = state.articles{ [index].appreciatedAmount = updatedappreciatedAmount }
-      put(state{ articles = updatedArticles })
+        let article = fetchArticle(index)
+        require(article.publisherAddress != Call.caller, "You cannot appreciate your own article")
+        Chain.spend(article.publisherAddress, price)
+        let updatedappreciatedAmount = article.appreciatedAmount + price
+        let updatedArticles = state.articles{ [index].appreciatedAmount = updatedappreciatedAmount }
+        put(state{ articles = updatedArticles })
 
 `;
-const contractAddress ='ct_TcbQed5ZEdi6zoC5bgM7PZiyYWL5ZkzQQHpnMvJnY5wFn3X3d';
+const contractAddress ='ct_2tyvCJdrAtt7zgW6rJXt2qZk5wYWnRtx4VtBQhJXkSPK88Zwf8';
 var client = null;
 var articleDetails = [];
 var totalArticles = 0;
