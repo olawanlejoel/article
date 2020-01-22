@@ -36,7 +36,7 @@ payable contract ArticleAmount =
     put(state{ articles = updatedArticles })
 
 `;
-const contractAddress ='ct_MVbvp3FgJkgKj2YfpvyGuQukPP5SoLAHiEUs8nZCUr8FQCxDY';
+const contractAddress ='ct_xpxgWHZJqrT5x9quxzkD9jprcig2axNL4TgZVCn2S2Bn9MQq8';
 var client = null;
 var articleDetails = [];
 var totalArticles = 0;
