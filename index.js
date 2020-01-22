@@ -26,17 +26,15 @@ payable contract ArticleAmount =
   entrypoint fetchtotalArticles() : int =
     state.totalArticles
     
-  payable stateful entrypoint appreciateArticle(index : int, price : int) =
-    
-    let article = fetchArticle(index)
-    require(article.publisherAddress != Call.caller, "You cannot appreciate your own article")
-    Chain.spend(article.publisherAddress, price)
-    let updatedappreciatedAmount = article.appreciatedAmount + price
-    let updatedArticles = state.articles{ [index].appreciatedAmount = updatedappreciatedAmount }
-    put(state{ articles = updatedArticles })
+  payable stateful entrypoint appreciateArticle(index : int) =
+      let article = fetchArticle(index)
+      Chain.spend(article.publisherAddress, Call.value)
+      let updatedappreciatedAmount = article.appreciatedAmount + Call.value
+      let updatedArticles = state.articles{ [index].appreciatedAmount = updatedappreciatedAmount }
+      put(state{ articles = updatedArticles })
 
 `;
-const contractAddress ='ct_xpxgWHZJqrT5x9quxzkD9jprcig2axNL4TgZVCn2S2Bn9MQq8';
+const contractAddress ='ct_TcbQed5ZEdi6zoC5bgM7PZiyYWL5ZkzQQHpnMvJnY5wFn3X3d';
 var client = null;
 var articleDetails = [];
 var totalArticles = 0;
