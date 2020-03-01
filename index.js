@@ -48,7 +48,7 @@ function renderArticles() {
   $('#articlesBody').html(rendered);
 }
 
-asychronus read from the blockchain
+//asychronus read from the blockchain
 async function callStatic(func, args) {
   const contract = await client.getContractInstance(contractSource, {contractAddress});
   const calledGet = await contract.call(func, args, {callStatic: true}).catch(e => console.error(e));
