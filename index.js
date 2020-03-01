@@ -48,25 +48,14 @@ function renderArticles() {
   $('#articlesBody').html(rendered);
 }
 
-// asychronus read from the blockchain
-// async function callStatic(func, args) {
-//   const contract = await client.getContractInstance(contractSource, {contractAddress});
-//   const calledGet = await contract.call(func, args, {callStatic: true}).catch(e => console.error(e));
-//   const decodedGet = await calledGet.decode().catch(e => console.error(e));
-//   return decodedGet;
-// }
-
-//Create a asynchronous read call for our smart contract
+asychronus read from the blockchain
 async function callStatic(func, args) {
-  //Create a new contract instance that we can interact with
   const contract = await client.getContractInstance(contractSource, {contractAddress});
-  //Make a call to get data of smart contract func, with specefied arguments
   const calledGet = await contract.call(func, args, {callStatic: true}).catch(e => console.error(e));
-  //Make another call to decode the data received in first call
   const decodedGet = await calledGet.decode().catch(e => console.error(e));
-
   return decodedGet;
 }
+
 
 //Create a asynchronous write call for our smart contract
 async function contractCall(func, args, value) {
