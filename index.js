@@ -48,11 +48,12 @@ function renderArticles() {
   $('#articlesBody').html(rendered);
 }
 
-//asychronus read from the blockchain
+//asynchronous read call for our smart contract
 async function callStatic(func, args) {
   const contract = await client.getContractInstance(contractSource, {contractAddress});
   const calledGet = await contract.call(func, args, {callStatic: true}).catch(e => console.error(e));
   const decodedGet = await calledGet.decode().catch(e => console.error(e));
+
   return decodedGet;
 }
 
