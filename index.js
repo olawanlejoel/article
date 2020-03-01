@@ -35,7 +35,7 @@ payable contract ArticleAmount =
     let updatedArticles = state.articles{ [index].appreciatedAmount = updatedappreciatedAmount }
     put(state{ articles = updatedArticles })
 `;
-const contractAddress ='ct_2YMgqczf4Sgdx5GdY7m56G8UPa7Anyt58hZpDpq3UJ729oHvV5';
+const contractAddress ='ct_tonCAbzb1jHYbUYqXPTPK1wHKSfxz3jCZbVpukdRe2VDmxvi';
 var client = null;
 var articleDetails = [];
 var totalArticles = 0;
@@ -62,7 +62,7 @@ async function contractCall(func, args, value) {
 
 function renderArticles() {
   articleDetails = articleDetails.sort(function(x,y){return y.Amount-x.Amount})
-  var article = $('#article').html();
+  let article = $('#article').html();
   Mustache.parse(article);
   var rendered = Mustache.render(article, {articleDetails});
   $('#articlesBody').html(rendered);
