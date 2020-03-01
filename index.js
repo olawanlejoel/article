@@ -41,32 +41,44 @@ var articleDetails = [];
 var totalArticles = 0;
 
 
-
+function renderArticles() {
+  articleDetails = articleDetails.sort(function(x,y){return y.Amount-x.Amount})
+  let article = $('#article').html();
+  Mustache.parse(article);
+  let rendered = Mustache.render(article, {articleDetails});
+  $('#articlesBody').html(rendered);
+}
 
 // asychronus read from the blockchain
+// async function callStatic(func, args) {
+//   const contract = await client.getContractInstance(contractSource, {contractAddress});
+//   const calledGet = await contract.call(func, args, {callStatic: true}).catch(e => console.error(e));
+//   const decodedGet = await calledGet.decode().catch(e => console.error(e));
+//   return decodedGet;
+// }
+
+//Create a asynchronous read call for our smart contract
 async function callStatic(func, args) {
+  //Create a new contract instance that we can interact with
   const contract = await client.getContractInstance(contractSource, {contractAddress});
+  //Make a call to get data of smart contract func, with specefied arguments
   const calledGet = await contract.call(func, args, {callStatic: true}).catch(e => console.error(e));
+  //Make another call to decode the data received in first call
   const decodedGet = await calledGet.decode().catch(e => console.error(e));
+
   return decodedGet;
 }
 
 //Create a asynchronous write call for our smart contract
 async function contractCall(func, args, value) {
   const contract = await client.getContractInstance(contractSource, {contractAddress});
-  console.log("Contract:", contract)
-  const calledSet = await contract.call(func, args, {amount:value}).catch(e => console.error(e));
-  console.log("CalledSet", calledSet)
+//   console.log("Contract:", contract)
+  const calledSet = await contract.call(func, args, {amount: value}).catch(e => console.error(e));
+//   console.log("CalledSet", calledSet)
   return calledSet;
 }
 
-function renderArticles() {
-  articleDetails = articleDetails.sort(function(x,y){return y.Amount-x.Amount})
-  let article = $('#article').html();
-  Mustache.parse(article);
-  var rendered = Mustache.render(article, {articleDetails});
-  $('#articlesBody').html(rendered);
-}
+
 
 
 // async function callStatic(func, args) {
@@ -113,7 +125,7 @@ window.addEventListener('load', async () => {
 
 jQuery("#articlesBody").on("click", ".appreciateBtn", async function(event){
   $("#loader").show();
-  let value = $(this).siblings('input').val();
+  let value = $(this).siblings('input').val(),
     index = event.target.id;
 
   await contractCall('appreciateArticle', [index], value);
