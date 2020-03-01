@@ -35,7 +35,7 @@ payable contract ArticleAmount =
     let updatedArticles = state.articles{ [index].appreciatedAmount = updatedappreciatedAmount }
     put(state{ articles = updatedArticles })
 `;
-const contractAddress ='ct_27P7aCh1UVRnHsEG5HZbtwnfo8YPJngbm8ZauZkLo7rBPox8Ad ';
+const contractAddress ='ct_2YMgqczf4Sgdx5GdY7m56G8UPa7Anyt58hZpDpq3UJ729oHvV5';
 var client = null;
 var articleDetails = [];
 var totalArticles = 0;
