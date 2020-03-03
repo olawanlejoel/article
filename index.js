@@ -133,8 +133,8 @@ $('#publishBtn').click(async function(){
       caption = ($('#caption').val());
 
       await contractCall('publishArticle', [title, article, caption], 0);
-      const id = articleDetails.length +1
-      newDate = await callStatic('fetchArticle', [id])
+      const id = articleDetails.length +1;
+      newDate = await callStatic('fetchArticle', [id]);
 
   articleDetails.push({
     title: title,
