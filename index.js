@@ -34,7 +34,7 @@ payable contract ArticleAmount =
     let updatedArticles = state.articles{ [index].appreciatedAmount = updatedappreciatedAmount }
     put(state{ articles = updatedArticles })
 `;
-const contractAddress ='ct_2SmS1mbxQNAyaeuerKxqjrqMhSrDzP9Pjnps1XyEdWUTBMG99A';
+const contractAddress ='ct_2pU2NsG1yPP4zEQ4PuAg9W38yjLRgsUJVDVhZZjfQuJerVxm42';
 var client = null;
 var articleDetails = [];
 var totalArticles = 0;
@@ -133,8 +133,8 @@ $('#publishBtn').click(async function(){
       caption = ($('#caption').val());
 
       await contractCall('publishArticle', [title, article, caption], 0);
-      const id = articleDetails.length +1;
-      newDate = await callStatic('fetchArticle', [id]);
+      const id = articleDetails.length +1
+      newDate = await callStatic('fetchArticle', [id])
 
   articleDetails.push({
     title: title,
