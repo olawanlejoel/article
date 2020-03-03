@@ -26,47 +26,48 @@ payable contract ArticleAmount =
   entrypoint fetchtotalArticles() : int =
     state.totalArticles
     
-  payable stateful entrypoint appreciateArticle(index : int, price : int) =
+  payable stateful entrypoint appreciateArticle(index : int) =
     
     let article = fetchArticle(index)
-    require(article.publisherAddress != Call.caller, "You cannot appreciate your own article")
-    Chain.spend(article.publisherAddress, price)
-    let updatedappreciatedAmount = article.appreciatedAmount + price
+    Chain.spend(article.publisherAddress, Call.value)
+    let updatedappreciatedAmount = article.appreciatedAmount + Call.value
     let updatedArticles = state.articles{ [index].appreciatedAmount = updatedappreciatedAmount }
     put(state{ articles = updatedArticles })
 `;
-const contractAddress ='ct_MVbvp3FgJkgKj2YfpvyGuQukPP5SoLAHiEUs8nZCUr8FQCxDY';
+const contractAddress ='ct_2SmS1mbxQNAyaeuerKxqjrqMhSrDzP9Pjnps1XyEdWUTBMG99A';
 var client = null;
 var articleDetails = [];
 var totalArticles = 0;
 
 
+function renderArticles() {
+  articleDetails = articleDetails.sort(function(x,y){return y.Amount-x.Amount})
+  let article = $('#article').html();
+  Mustache.parse(article);
+  let rendered = Mustache.render(article, {articleDetails});
+  $('#articlesBody').html(rendered);
+}
 
-
-// asychronus read from the blockchain
+//asynchronous read call for our smart contract
 async function callStatic(func, args) {
   const contract = await client.getContractInstance(contractSource, {contractAddress});
   const calledGet = await contract.call(func, args, {callStatic: true}).catch(e => console.error(e));
   const decodedGet = await calledGet.decode().catch(e => console.error(e));
+
   return decodedGet;
 }
+
 
 //Create a asynchronous write call for our smart contract
 async function contractCall(func, args, value) {
   const contract = await client.getContractInstance(contractSource, {contractAddress});
-  console.log("Contract:", contract)
-  const calledSet = await contract.call(func, args, {amount:value}).catch(e => console.error(e));
-  console.log("CalledSet", calledSet)
+//   console.log("Contract:", contract)
+  const calledSet = await contract.call(func, args, {amount: value}).catch(e => console.error(e));
+//   console.log("CalledSet", calledSet)
   return calledSet;
 }
 
-function renderArticles() {
-  articleDetails = articleDetails.sort(function(x,y){return y.Amount-x.Amount})
-  var article = $('#article').html();
-  Mustache.parse(article);
-  var rendered = Mustache.render(article, {articleDetails});
-  $('#articlesBody').html(rendered);
-}
+
 
 
 // async function callStatic(func, args) {
@@ -113,7 +114,7 @@ window.addEventListener('load', async () => {
 
 jQuery("#articlesBody").on("click", ".appreciateBtn", async function(event){
   $("#loader").show();
-  let value = $(this).siblings('input').val();
+  let value = $(this).siblings('input').val(),
     index = event.target.id;
 
   await contractCall('appreciateArticle', [index], value);
